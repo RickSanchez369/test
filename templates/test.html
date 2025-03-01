@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محصولات</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>دسته‌بندی‌ها</h1>
+    <ul id="category-list">
+        {% for category in categories %}
+            <li>
+                <a href="#" class="category-link" data-id="{{ category.id }}">{{ category.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>محصولات</h2>
+    <ul id="product-list">
+        {% for product in products %}
+            <li>{{ product.name }} - {{ product.price }} تومان</li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        $(document).ready(function() {
+            $('.category-link').click(function(e) {
+                e.preventDefault();
+                let categoryId = $(this).data('id');
+
+                $.ajax({
+                    url: `/get-products/${categoryId}/`,
+                    method: 'GET',
+                    success: function(response) {
+                        let productList = $('#product-list');
+                        productList.empty();
+
+                        response.products.forEach(product => {
+                            productList.append(`<li>${product.name} - ${product.price} تومان</li>`);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
